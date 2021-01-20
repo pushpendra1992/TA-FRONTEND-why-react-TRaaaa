@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie List App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main>
+        <section class="watch-list-section wrapper">
+            <div>
+                <h1>My movie watch list</h1>
+                <form>
+                    <input class="" type="text" name="text" placeholder="Enter movie name">
+                </form>
+                <ul class="watch-list"></ul>
+            </div>
+        </section>
+    </main>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel" src="script.js">
+
+        let form = document.querySelector("form");
+let input = document.querySelector("input");
+let ul = document.querySelector("ul");
+let userInfo = JSON.parse(localStorage.getItem('userInfo')) || [];
+
+function handler(event) {
+    if (form.elements.text.value !== "") {
+        event.preventDefault();
+        let watchList = {
+            name: form.elements.text.value,
+            toWatch: false,
+        };
+        userInfo.push(watchList);
+        form.elements.text.value = '';
+        createUi(userInfo);
+    }
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+}
+
+
+let elm = React.createElement;
+
+function createUi(arr) {
+    //ul.innerHTML = '';
+    let ui = arr.map(element => {
+        return <li className ="watch-movie-item">
+            {element.name}
+            <a>{element.toWatch ? "watched" : "Towatch"}</a>
+            </li>
+    });
+    ReactDOM.render(ui, ul)
+}
+
+function watched(event) {
+    let index = [...document.querySelectorAll('li')].indexOf(event.target.parentElement);
+    userInfo[index].toWatch = !userInfo[index].toWatch;
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    createUi(userInfo);
+}
+
+createUi(userInfo);
+
+form.addEventListener('submit', handler);
+ul.addEventListener("click", (e) => {
+    if (e.target.tagName == "A") {
+        watched(e)
+    }
+})
+    </script>
+</body>
+
+</html>
