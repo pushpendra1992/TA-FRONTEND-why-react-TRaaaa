@@ -1,19 +1,45 @@
-// Create a list item clicking on the "Add" button
-function newElement() {
-    var li = document.createElement("li");
-    var inputValue = document.getElementById("myMovie").value;
-    var t = document.createTextNode(inputValue);
-    li.appendChild(t);
-    if (inputValue === '') {
-        alert("You must write a moie name !");
-    } else {
-        document.getElementById("myMovieList").appendChild(li);
-    }
-    document.getElementById("myMovie").value = "";
+let form = document.querySelector("form");
+let input = document.querySelector("input");
+let ul = document.querySelector("ul");
+let userInfo = JSON.parse(localStorage.getItem('userInfo')) || [];
 
-    var span = document.createElement("SPAN");
-    var txt = document.createTextNode("To Watch");
-    span.className = "watchList";
-    span.appendChild(txt);
-    li.appendChild(span);
+function handler(event) {
+    if (form.elements.text.value !== "") {
+        event.preventDefault();
+        let watchList = {
+            name: form.elements.text.value,
+            toWatch: false,
+        };
+        userInfo.push(watchList);
+        form.elements.text.value = '';
+        createUi(userInfo);
+    }
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
 }
+
+function createUi(arr) {
+    ul.innerHTML = '';
+    arr.forEach(element => {
+        let li = document.createElement("li");
+        li.innerText = element.name;
+        var att = document.createAttribute("class");
+        att.value = "watch-movie-item";
+        li.setAttributeNode(att);
+        let a = document.createElement('a');
+        a.innerText = element.toWatch ? "watched" : "Towatch";
+        a.addEventListener("click", watched)
+        li.append(a);
+        ul.append(li);
+    });
+}
+
+function watched(event) {
+    let index = [...document.querySelectorAll('li')].indexOf(event.target.parentElement);
+    userInfo[index].toWatch = !userInfo[index].toWatch;
+    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    createUi(userInfo);
+}
+
+createUi(userInfo);
+
+form.addEventListener('submit', handler);
