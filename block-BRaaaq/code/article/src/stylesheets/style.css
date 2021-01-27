@@ -1,0 +1,15 @@
+.mt-4{
+    margin-top: 20px;
+}
+
+.font-10{
+    font-size: 10px;
+}
+.font-12{
+    font-size: 10px;
+    font-weight: bold;
+}
+.banner{
+    width:100%;
+    height:500px;
+}
